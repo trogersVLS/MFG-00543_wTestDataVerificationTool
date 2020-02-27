@@ -1,0 +1,10 @@
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\bin\Release\MFG-00543 Test Data Verification Tool.exe.config
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\bin\Release\MFG-00543 Test Data Verification Tool.exe
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\bin\Release\MFG-00543 Test Data Verification Tool.pdb
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG_00543_Test_Data_Verification_Tool.FrmAbout.resources
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG_00543_Test_Data_Verification_Tool.FrmApp.resources
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG_00543_Test_Data_Verification_Tool.Properties.Resources.resources
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG-00543 Test Data Verification Tool.csproj.GenerateResource.cache
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG-00543 Test Data Verification Tool.csproj.CoreCompileInputs.cache
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG-00543 Test Data Verification Tool.exe
+C:\Users\alowe\source\repos\MFG-00543 Test Data Verification Tool\obj\Release\MFG-00543 Test Data Verification Tool.pdb
