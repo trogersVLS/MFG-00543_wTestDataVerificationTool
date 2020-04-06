@@ -110,7 +110,17 @@
     <Description>Assembly, Center Band</Description>
     <ST>StartTime</ST>
   </partnumber>
+  <partnumber pn="PRT-00475-002">
+    <Table>Centerband</Table>
+    <Description>Assembly, Center Band</Description>
+    <ST>StartTime</ST>
+  </partnumber>
   <partnumber pn="PRT-00910-000">
+    <Table>Centerband</Table>
+    <Description>Assembly, Center Band, VC</Description>
+    <ST>StartTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-00910-001">
     <Table>Centerband</Table>
     <Description>Assembly, Center Band, VC</Description>
     <ST>StartTime</ST>
@@ -120,7 +130,17 @@
     <Description>Assembly, Center Band, VC Standard</Description>
     <ST>StartTime</ST>
   </partnumber>
+  <partnumber pn="PRT-01095-001">
+    <Table>Centerband</Table>
+    <Description>Assembly, Center Band, VC Standard</Description>
+    <ST>StartTime</ST>
+  </partnumber>
   <partnumber pn="PRT-01114-000">
+    <Table>Centerband</Table>
+    <Description>Assembly, Center Band, VOCSN Standard</Description>
+    <ST>StartTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-01114-001">
     <Table>Centerband</Table>
     <Description>Assembly, Center Band, VOCSN Standard</Description>
     <ST>StartTime</ST>
