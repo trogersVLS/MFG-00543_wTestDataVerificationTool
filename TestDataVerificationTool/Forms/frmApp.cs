@@ -9,10 +9,11 @@ using System.Xml;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Configuration;
 
 
 
-namespace MFG_00543_Test_Data_Verification_Tool
+namespace TestDataVerificationTool
 {
     public partial class FrmApp : Form
     {
@@ -28,10 +29,10 @@ namespace MFG_00543_Test_Data_Verification_Tool
             using (var form = new FrmAbout())
             {
                 var result = form.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    string val = form.ReturnValue1;   //this is here just to hold the fail screen and let the operator see what failed.
-                }
+                // if (result == DialogResult.OK)
+                // {
+                //     string val = form.ReturnValue1;   //this is here just to hold the fail screen and let the operator see what failed.
+                // }
 
             }
         }
@@ -53,10 +54,13 @@ namespace MFG_00543_Test_Data_Verification_Tool
 
         private void TxtUnitSN_LostFocus(object sender, EventArgs e)
         {
-            if (txtUnitSN.Text != "" && cboOpID.Text != "")
+            if (txtUnitSN.Text != "")
             {
                 QueryPNFromDB(txtUnitSN.Text);
-                LoadXML(GlobalSettings.PN);
+                if (GlobalSettings.PN != null)
+                {
+                    LoadXML(GlobalSettings.PN);
+                }
                 QueryFromDB(txtUnitSN.Text);
 
                 if (GlobalSettings.ReadOnly == false)
@@ -81,16 +85,28 @@ namespace MFG_00543_Test_Data_Verification_Tool
 
             try
             {
-
+                string location = ConfigurationManager.AppSettings["Location"];
                 //query from database
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+                SqlConnectionStringBuilder sqlconn = new SqlConnectionStringBuilder
                 {
-                    DataSource = "Ventec-SQL01",
+                    DataSource = ConfigurationManager.AppSettings["db_path"],
                     IntegratedSecurity = true,
                     PersistSecurityInfo = false,
                     InitialCatalog = "SYSPROVLSZ"
                 };
-
+                if (location == "Kokomo")
+                {
+                    sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
+                    sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
+                    sqlconn.IntegratedSecurity = false;
+                }
+                else
+                {
+                    //sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
+                    //sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
+                    sqlconn.IntegratedSecurity = true;
+                }
+                
 
 
                 // Connect to SQL
@@ -102,7 +118,7 @@ namespace MFG_00543_Test_Data_Verification_Tool
                         "Where Serial = '" + SN + "'";
                 
 
-                SqlConnection connection = new SqlConnection(builder.ConnectionString);
+                SqlConnection connection = new SqlConnection(sqlconn.ConnectionString);
 
                 connection.Open();
 
@@ -177,15 +193,27 @@ namespace MFG_00543_Test_Data_Verification_Tool
 
             try
             {
-
+                string location = ConfigurationManager.AppSettings["Location"];
                 //query from database
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+                SqlConnectionStringBuilder sqlconn = new SqlConnectionStringBuilder
                 {
-                    DataSource = "Ventec-SQL" + GlobalSettings.DB,
+                    DataSource = ConfigurationManager.AppSettings["db_path"],
                     IntegratedSecurity = true,
                     PersistSecurityInfo = false,
                     InitialCatalog = "Production_Test_Data"
                 };
+                if (location == "Kokomo")
+                {
+                    sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
+                    sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
+                    sqlconn.IntegratedSecurity = false;
+                }
+                else
+                {
+                    //sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
+                    //sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
+                    sqlconn.IntegratedSecurity = true;
+                }
 
                 // Connect to SQL
                 rtbStatus.AppendText("\n" + System.DateTime.Now + ": Checking test database for existing tests");
@@ -198,7 +226,7 @@ namespace MFG_00543_Test_Data_Verification_Tool
                 
                 if (GlobalSettings.Table != "")
                 {
-                    SqlConnection connection2 = new SqlConnection(builder.ConnectionString);
+                    SqlConnection connection2 = new SqlConnection(sqlconn.ConnectionString);
 
                     SqlCommand sqlCmd = new SqlCommand
                     {
@@ -280,9 +308,10 @@ namespace MFG_00543_Test_Data_Verification_Tool
             button1.Enabled = false;
             btnConfirm.BackColor = System.Drawing.Color.Gray;
             button1.BackColor = System.Drawing.Color.Gray;
-            cboOpID.DataSource = GetOperatorIDs();
-            cboOpID.DisplayMember = "operator";
-            cboOpID.SelectedIndex = -1;
+            operatorID.Text = GlobalSettings.UserID;
+            //cboOpID.DataSource = GetOperatorIDs();
+            //cboOpID.DisplayMember = "operator";
+            //cboOpID.SelectedIndex = -1;
             lblDescription.Text = "";
         }
 
@@ -292,7 +321,9 @@ namespace MFG_00543_Test_Data_Verification_Tool
             {
                 using (DataSet ds = new DataSet())
                 {
-                    ds.ReadXml(Application.StartupPath + "\\Settings.xml");
+                    //Settings Path
+                    var s = ConfigurationManager.AppSettings["config_path"];
+                    ds.ReadXml(ConfigurationManager.AppSettings["config_path"]);
                     DataTable dt = ds.Tables["operatorID"];
                     return dt;
                 }
@@ -328,7 +359,7 @@ namespace MFG_00543_Test_Data_Verification_Tool
             {
                 StringBuilder errorMessages = new StringBuilder();
 
-                using (XmlReader reader = XmlReader.Create(Application.StartupPath + "\\Settings.xml"))
+                using (XmlReader reader = XmlReader.Create(ConfigurationManager.AppSettings["config_path"]))
 
                 {
                     string s = "";
@@ -471,7 +502,7 @@ namespace MFG_00543_Test_Data_Verification_Tool
                     commandRemote.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.PN;
                     commandRemote.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.EventName;
                     commandRemote.Parameters.Add("@StartTime", System.Data.SqlDbType.DateTime).Value = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-                    commandRemote.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = cboOpID.Text;
+                    commandRemote.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.UserID;
                     commandRemote.Parameters.Add("@ConfirmedResult", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.Result;
                     commandRemote.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.MFGSpec;
                     commandRemote.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWSpec;
@@ -542,5 +573,7 @@ namespace MFG_00543_Test_Data_Verification_Tool
         public static string Result;
         public static bool ReadOnly;
         public static string PN;
+        public static string UserName = System.Environment.UserName;
+        public static string UserID = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
     }
 }

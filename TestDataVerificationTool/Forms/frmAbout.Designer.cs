@@ -1,4 +1,4 @@
-﻿namespace MFG_00543_Test_Data_Verification_Tool
+﻿namespace TestDataVerificationTool
 {
     partial class FrmAbout
     {
@@ -33,6 +33,7 @@
             this.lblSWRev = new System.Windows.Forms.Label();
             this.lblSWnum = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
+            this.RevLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblAuthor
@@ -49,9 +50,9 @@
             this.lblSWRev.AutoSize = true;
             this.lblSWRev.Location = new System.Drawing.Point(12, 33);
             this.lblSWRev.Name = "lblSWRev";
-            this.lblSWRev.Size = new System.Drawing.Size(106, 13);
+            this.lblSWRev.Size = new System.Drawing.Size(96, 13);
             this.lblSWRev.TabIndex = 7;
-            this.lblSWRev.Text = "Software Revision: B";
+            this.lblSWRev.Text = "Software Revision:";
             // 
             // lblSWnum
             // 
@@ -72,11 +73,21 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
+            // RevLabel
+            // 
+            this.RevLabel.AutoSize = true;
+            this.RevLabel.Location = new System.Drawing.Point(115, 33);
+            this.RevLabel.Name = "RevLabel";
+            this.RevLabel.Size = new System.Drawing.Size(55, 13);
+            this.RevLabel.TabIndex = 9;
+            this.RevLabel.Text = "<revision>";
+            // 
             // FrmAbout
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(257, 213);
+            this.Controls.Add(this.RevLabel);
             this.Controls.Add(this.lblAuthor);
             this.Controls.Add(this.lblSWRev);
             this.Controls.Add(this.lblSWnum);
@@ -95,5 +106,6 @@
         private System.Windows.Forms.Label lblSWRev;
         private System.Windows.Forms.Label lblSWnum;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Label RevLabel;
     }
 }

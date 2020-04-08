@@ -1,4 +1,4 @@
-﻿namespace MFG_00543_Test_Data_Verification_Tool
+﻿namespace TestDataVerificationTool
 {
     partial class FrmApp
     {
@@ -37,7 +37,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblOperator = new System.Windows.Forms.Label();
             this.txtUnitSN = new System.Windows.Forms.TextBox();
-            this.cboOpID = new System.Windows.Forms.ComboBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.rtbStatus = new System.Windows.Forms.RichTextBox();
@@ -46,6 +45,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.operatorID = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +53,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -116,15 +116,6 @@
             this.txtUnitSN.Size = new System.Drawing.Size(121, 20);
             this.txtUnitSN.TabIndex = 64;
             this.txtUnitSN.LostFocus += new System.EventHandler(this.TxtUnitSN_LostFocus);
-            // 
-            // cboOpID
-            // 
-            this.cboOpID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboOpID.FormattingEnabled = true;
-            this.cboOpID.Location = new System.Drawing.Point(89, 41);
-            this.cboOpID.Name = "cboOpID";
-            this.cboOpID.Size = new System.Drawing.Size(121, 21);
-            this.cboOpID.TabIndex = 62;
             // 
             // dataGridView1
             // 
@@ -218,12 +209,20 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
+            // operatorID
+            // 
+            this.operatorID.Location = new System.Drawing.Point(89, 42);
+            this.operatorID.Name = "operatorID";
+            this.operatorID.Size = new System.Drawing.Size(121, 20);
+            this.operatorID.TabIndex = 85;
+            // 
             // FrmApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(986, 692);
+            this.Controls.Add(this.operatorID);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.label2);
@@ -233,7 +232,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.lblOperator);
             this.Controls.Add(this.txtUnitSN);
-            this.Controls.Add(this.cboOpID);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rtbStatus);
@@ -258,7 +256,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label lblOperator;
         private System.Windows.Forms.TextBox txtUnitSN;
-        private System.Windows.Forms.ComboBox cboOpID;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RichTextBox rtbStatus;
@@ -267,6 +264,7 @@
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox operatorID;
     }
 }
 

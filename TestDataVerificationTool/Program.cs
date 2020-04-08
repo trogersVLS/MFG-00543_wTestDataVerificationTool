@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MFG_00543_Test_Data_Verification_Tool
+namespace TestDataVerificationTool
 {
     static class Program
     {
@@ -14,6 +14,16 @@ namespace MFG_00543_Test_Data_Verification_Tool
         [STAThread]
         static void Main()
         {
+            //Validate files first
+            try
+            {
+                FileManager.ValidateFiles();
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+                Application.Exit();
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmApp());
