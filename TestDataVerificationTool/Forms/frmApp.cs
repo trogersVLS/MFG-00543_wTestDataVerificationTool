@@ -23,17 +23,21 @@ namespace TestDataVerificationTool
         {
             InitializeComponent();
         }
+        private void FrmApp_Load(object sender, EventArgs e)
+        {
+            btnConfirm.Enabled = false;
+            btnFail.Enabled = false;
+            btnConfirm.BackColor = System.Drawing.Color.Gray;
+            btnFail.BackColor = System.Drawing.Color.Gray;
+            operatorID.Text = GlobalSettings.UserID; ;
+            lblDescription.Text = "";
+        }
 
         private void ShowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FrmAbout())
             {
                 var result = form.ShowDialog();
-                // if (result == DialogResult.OK)
-                // {
-                //     string val = form.ReturnValue1;   //this is here just to hold the fail screen and let the operator see what failed.
-                // }
-
             }
         }
 
@@ -60,15 +64,16 @@ namespace TestDataVerificationTool
                 if (GlobalSettings.PN != null)
                 {
                     LoadXML(GlobalSettings.PN);
+                    QueryFromDB(txtUnitSN.Text);
                 }
-                QueryFromDB(txtUnitSN.Text);
+                
 
                 if (GlobalSettings.ReadOnly == false)
                 {
-                    button1.Enabled = true;
+                    btnFail.Enabled = true;
                     btnConfirm.Enabled = true;
                     btnConfirm.BackColor = System.Drawing.Color.Green;
-                    button1.BackColor = System.Drawing.Color.Red;
+                    btnFail.BackColor = System.Drawing.Color.Red;
                 }
             }
             else
@@ -81,79 +86,18 @@ namespace TestDataVerificationTool
         public void QueryPNFromDB(string SN)
         {
             StringBuilder errorMessages = new StringBuilder();
-            string query;
-
+            
             try
             {
-                string location = ConfigurationManager.AppSettings["Location"];
-                //query from database
-                SqlConnectionStringBuilder sqlconn = new SqlConnectionStringBuilder
+                rtbStatus.AppendText("\n" + System.DateTime.Now + ": Checking Syspro database for part number");
+                GlobalSettings.PN = DBManager.GetPartNumber(SN);
+                if(GlobalSettings.PN == null)
                 {
-                    DataSource = ConfigurationManager.AppSettings["db_path"],
-                    IntegratedSecurity = true,
-                    PersistSecurityInfo = false,
-                    InitialCatalog = "SYSPROVLSZ"
-                };
-                if (location == "Kokomo")
-                {
-                    sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
-                    sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
-                    sqlconn.IntegratedSecurity = false;
+                    rtbStatus.AppendText("\n" + System.DateTime.Now + ": Serial number could not be found in Syspro");
                 }
-                else
-                {
-                    //sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
-                    //sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
-                    sqlconn.IntegratedSecurity = true;
-                }
-                
-
-
-                // Connect to SQL
-                rtbStatus.AppendText("\n" + System.DateTime.Now + ": Getting Part Number from Syspro DB");
-
-
-                query = "Select distinct StockCode " +
-                        "From InvSerialTrn " +
-                        "Where Serial = '" + SN + "'";
-                
-
-                SqlConnection connection = new SqlConnection(sqlconn.ConnectionString);
-
-                connection.Open();
-
-                SqlCommand command = new SqlCommand
-                {
-                    Connection = connection,
-                    CommandType = CommandType.Text,
-                    CommandText = query
-                };
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            GlobalSettings.PN = Convert.ToString(reader["StockCode"]);
-                            rtbStatus.AppendText(" - Done");
-
-                        }
-
-                    }
-                    else
-                    {
-                        rtbStatus.AppendText(System.DateTime.Now + "\n: No Part Numbers were found for this Serial Number in Syspro\n");
-                    }
-
-                }
-
-                command.Dispose();
-                
-
+                else rtbStatus.AppendText("- Done");
 
             }
-
             catch (SqlException ex)
             {
                 bool bDBState = true;
@@ -189,85 +133,25 @@ namespace TestDataVerificationTool
         public void QueryFromDB(string SN)
         {
             StringBuilder errorMessages = new StringBuilder();
-            string query;
 
             try
             {
-                string location = ConfigurationManager.AppSettings["Location"];
-                //query from database
-                SqlConnectionStringBuilder sqlconn = new SqlConnectionStringBuilder
-                {
-                    DataSource = ConfigurationManager.AppSettings["db_path"],
-                    IntegratedSecurity = true,
-                    PersistSecurityInfo = false,
-                    InitialCatalog = "Production_Test_Data"
-                };
-                if (location == "Kokomo")
-                {
-                    sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
-                    sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
-                    sqlconn.IntegratedSecurity = false;
-                }
-                else
-                {
-                    //sqlconn.UserID = ConfigurationManager.AppSettings["db_user"];
-                    //sqlconn.Password = ConfigurationManager.AppSettings["db_pass"];
-                    sqlconn.IntegratedSecurity = true;
-                }
-
-                // Connect to SQL
-                rtbStatus.AppendText("\n" + System.DateTime.Now + ": Checking test database for existing tests");
-
-                query = "Select * " +
-                        "From dbo.Production_Test_" + GlobalSettings.Table + " " +
-                        "where Serial = '" + SN + "' " +
-                        "order by " + GlobalSettings.ST + " desc";
-
-                
                 if (GlobalSettings.Table != "")
                 {
-                    SqlConnection connection2 = new SqlConnection(sqlconn.ConnectionString);
-
-                    SqlCommand sqlCmd = new SqlCommand
-                    {
-                        Connection = connection2,
-                        CommandType = CommandType.Text,
-                        CommandText = query
-                    };
-                    using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(sqlCmd))
-                    {
-                        DataTable dtRecord = new DataTable();
-                        sqlDataAdap.Fill(dtRecord);
-                        dataGridView1.DataSource = dtRecord;
-
-                    }
+                    //Look for existing tests
+                    rtbStatus.AppendText("\n" + System.DateTime.Now + ": Checking test database for existing tests");
+                    dataGridView1.DataSource = DBManager.GetTestRecords(GlobalSettings.Table, SN, GlobalSettings.ST, GlobalSettings.PN);
                     rtbStatus.AppendText(" - Done");
                 }
                 else
                 {
                     rtbStatus.AppendText("\n" + System.DateTime.Now + ": Records for " + GlobalSettings.PN + " could not be found in any test data table listed in Settings.XML\n");
                 }
-
-
-                foreach (DataGridViewRow row in dataGridView1.Rows)
+                if(GlobalSettings.Table == "Production_Test_Final_Test")
                 {
-                    if (object.Equals(row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Value, "PASS"))
-                    {
-                        /*  change color of cell*/
-                        row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Style.BackColor = Color.Green;
-                        row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                    }
-
-                    if (object.Equals(row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Value, "FAIL"))
-                    {
-                        /*  change color of cell*/
-                        row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Style.BackColor = Color.Red;
-                        row.Cells[dataGridView1.Columns["OverallPassFail"].Index].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
-                    }
-
+                    this.FilterFinalTestRecords(GlobalSettings.PN);
                 }
-
-
+                this.HighlightPassFail(GlobalSettings.Table);
             }
 
             catch (SqlException ex)
@@ -302,41 +186,62 @@ namespace TestDataVerificationTool
 
         }
 
-        private void FrmApp_Load(object sender, EventArgs e)
+        private void HighlightPassFail(string tableName)
         {
-            btnConfirm.Enabled = false;
-            button1.Enabled = false;
-            btnConfirm.BackColor = System.Drawing.Color.Gray;
-            button1.BackColor = System.Drawing.Color.Gray;
-            operatorID.Text = GlobalSettings.UserID;
-            //cboOpID.DataSource = GetOperatorIDs();
-            //cboOpID.DisplayMember = "operator";
-            //cboOpID.SelectedIndex = -1;
-            lblDescription.Text = "";
-        }
+            string ColumnName;
+            if (tableName == "Production_Test_Final_Test") ColumnName = "TestResult";
+            else ColumnName = "OverallPassFail";
 
-        private DataTable GetOperatorIDs()
-        {
-            try
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                using (DataSet ds = new DataSet())
+                if (object.Equals(row.Cells[dataGridView1.Columns[ColumnName].Index].Value, "PASS"))
                 {
-                    //Settings Path
-                    var s = ConfigurationManager.AppSettings["config_path"];
-                    ds.ReadXml(ConfigurationManager.AppSettings["config_path"]);
-                    DataTable dt = ds.Tables["operatorID"];
-                    return dt;
+                    /*  change color of cell*/
+                    row.Cells[dataGridView1.Columns[ColumnName].Index].Style.BackColor = Color.Green;
+                    row.Cells[dataGridView1.Columns[ColumnName].Index].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
                 }
 
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message + " Please ask for assistance from a qualified test engineer.");
-                Application.Exit();
-                return null;
+                else if (object.Equals(row.Cells[dataGridView1.Columns[ColumnName].Index].Value, "FAIL"))
+                {
+                    /*  change color of cell*/
+                    row.Cells[dataGridView1.Columns[ColumnName].Index].Style.BackColor = Color.Red;
+                    row.Cells[dataGridView1.Columns[ColumnName].Index].Style.Font = new Font(dataGridView1.Font, FontStyle.Bold);
+                }
+                
             }
         }
+        private void FilterFinalTestRecords(string PN)
+        {   
+            //Assumed that all rows are ordered by time.
+            List<string> test_names = new List<string>();
+            List<int> duplicate_index = new List<int>();
+            foreach(DataGridViewRow row in dataGridView1.Rows)
+            { 
+                string test = (row.Cells[dataGridView1.Columns["TestName"].Index].Value ?? "").ToString();
+                if (test_names.Contains(test))
+                {
+                    duplicate_index.Add(row.Index);
+                }
+                else
+                {   if (test != "")
+                    {
+                        test_names.Add(test);
+                    }
+                }
+            }
+            DataTable data = (DataTable)dataGridView1.DataSource;
+            duplicate_index.Sort();
+            duplicate_index.Reverse();
+            foreach(int i in duplicate_index)
+            {
+                data.Rows[i].Delete();
+            }
+            dataGridView1.DataSource = data;
+            UpdateRecordCount(null, null);
+            //dataGridView1.Rows.RemoveAt(0);
+        }
+
+       
 
 
         public void LoadXML(string partnumber)
@@ -359,13 +264,11 @@ namespace TestDataVerificationTool
             {
                 StringBuilder errorMessages = new StringBuilder();
 
-                using (XmlReader reader = XmlReader.Create(ConfigurationManager.AppSettings["config_path"]))
-
+                using (XmlReader reader = XmlReader.Create(ConfigurationManager.AppSettings["ConfigPath"]))
                 {
                     string s = "";
                     if (part)
                     {
-
                         while (reader.Read())
                         {
                             if (reader.IsStartElement())
@@ -396,8 +299,6 @@ namespace TestDataVerificationTool
                                 //get element name and switch off it
                                 switch (reader.Name.ToString())
                                 {
-
-
                                     case "MFGSpec":
                                         GlobalSettings.MFGSpec = reader.ReadElementContentAsString();
                                         break;
@@ -418,10 +319,7 @@ namespace TestDataVerificationTool
                                         break;
 
                                 }
-
-
                             }
-
                         }
                         return s;
                     }
@@ -439,93 +337,125 @@ namespace TestDataVerificationTool
         }
 
         private void RtbStatus_TextChanged(object sender, EventArgs e)
-        {
+        {   
+            //Keeps the caret at the end of the message box.
             rtbStatus.SelectionStart = rtbStatus.Text.Length;
             rtbStatus.ScrollToCaret();
         }
 
-        private void BtnConfirm_Click(object sender, EventArgs e)
-        {
+        private void ButtonConfirm_Click(object sender, EventArgs e)
+        {   
+            //Disable any other button functions until function has completed
+            btnFail.Enabled = false;
+            btnConfirm.Enabled = false;
+
             rtbStatus.AppendText(System.DateTime.Now + ": Pass Confirmed\n");
             btnConfirm.Enabled = false;
             btnConfirm.BackColor = System.Drawing.Color.Gray;
-            button1.Enabled = false;
-            button1.BackColor = System.Drawing.Color.Gray;
+            btnFail.Enabled = false;
+            btnFail.BackColor = System.Drawing.Color.Gray;
             GlobalSettings.Result = "PASS";
             DataUpload();
             rtbStatus.AppendText(System.DateTime.Now + ": Data Uploaded\n");
             dataGridView1.DataSource = null;
             txtUnitSN.Text = "";
-            
-            
+
+            //Re-enable buttons on exit.
+            btnFail.Enabled = true;
+            btnConfirm.Enabled = true;
+        }
+        private void ButtonFail_Click(object sender, EventArgs e)
+        {
+            //Disable any other button functions until function has completed
+            btnFail.Enabled = false;
+            btnConfirm.Enabled = false;
+
+            rtbStatus.AppendText(System.DateTime.Now + ": Fail Confirmed\n");
+            btnFail.BackColor = System.Drawing.Color.Gray;
+            btnConfirm.BackColor = System.Drawing.Color.Gray;
+            GlobalSettings.Result = "FAIL";
+            DataUpload();
+            rtbStatus.AppendText(System.DateTime.Now + ": Data Uploaded\n");
+            dataGridView1.DataSource = null;
+            txtUnitSN.Text = "";
+
+            //Re-enable buttons on exit.
+            btnFail.Enabled = true;
+            btnConfirm.Enabled = true;
         }
 
-        public string DataUpload()
+        public void DataUpload()
         {
-            StringBuilder errorMessages = new StringBuilder();
-            string str = "";
+            //StringBuilder errorMessages = new StringBuilder();
+            //string str = "";
 
             try
             {
 
+                DBManager.InsertVerification(txtUnitSN.Text, GlobalSettings.PN, 
+                                             GlobalSettings.EventName, GlobalSettings.UserID, 
+                                             GlobalSettings.Result, GlobalSettings.MFGSpec, 
+                                             GlobalSettings.SWSpec, GlobalSettings.SWRev);
 
 
-                SqlConnection connRemote = new SqlConnection(@"Data Source = Ventec-SQL" + GlobalSettings.DB + "; " +
-                                                              "Integrated Security = SSPI; " +
-                                                              "PersistSecurityInfo = False; " +
-                                                              "Initial Catalog = Production_Test_Data");
 
-                connRemote.Open();
+                //    SqlConnection connRemote = new SqlConnection(@"Data Source = Ventec-SQL" + GlobalSettings.DB + "; " +
+                //                                                  "Integrated Security = SSPI; " +
+                //                                                  "PersistSecurityInfo = False; " +
+                //                                                  "Initial Catalog = Production_Test_Data");
 
-                string query = "INSERT INTO dbo.Production_Test_AssemblyVerification (Serial," +
-                                                            "PartNumber," +
-                                                            "EventName," +
-                                                            "StartTime," +
-                                                            "OperatorID," +
-                                                            "ConfirmedResult," +
-                                                            "MFGSpec," +
-                                                            "SWSpec," +
-                                                            "SWRevision)" +
-                                                    "VALUES (@Serial," +
-                                                            "@PartNumber," +
-                                                            "@EventName," +
-                                                            "@StartTime," +
-                                                            "@OperatorID," +
-                                                            "@ConfirmedResult," +
-                                                            "@MFGSpec," +
-                                                            "@SWSpec," +
-                                                            "@SWRevision);";
+                //    connRemote.Open();
 
-                using (SqlCommand commandRemote = new SqlCommand(query, connRemote))
-                {
-                    commandRemote.Parameters.Add("@Serial", System.Data.SqlDbType.NVarChar).Value = txtUnitSN.Text;
-                    commandRemote.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.PN;
-                    commandRemote.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.EventName;
-                    commandRemote.Parameters.Add("@StartTime", System.Data.SqlDbType.DateTime).Value = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-                    commandRemote.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.UserID;
-                    commandRemote.Parameters.Add("@ConfirmedResult", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.Result;
-                    commandRemote.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.MFGSpec;
-                    commandRemote.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWSpec;
-                    commandRemote.Parameters.Add("@SWRevision", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWRev;
+                //    string query = "INSERT INTO dbo.Production_Test_AssemblyVerification (Serial," +
+                //                                                "PartNumber," +
+                //                                                "EventName," +
+                //                                                "StartTime," +
+                //                                                "OperatorID," +
+                //                                                "ConfirmedResult," +
+                //                                                "MFGSpec," +
+                //                                                "SWSpec," +
+                //                                                "SWRevision)" +
+                //                                        "VALUES (@Serial," +
+                //                                                "@PartNumber," +
+                //                                                "@EventName," +
+                //                                                "@StartTime," +
+                //                                                "@OperatorID," +
+                //                                                "@ConfirmedResult," +
+                //                                                "@MFGSpec," +
+                //                                                "@SWSpec," +
+                //                                                "@SWRevision);";
 
-                    int result = commandRemote.ExecuteNonQuery();
+                //    using (SqlCommand commandRemote = new SqlCommand(query, connRemote))
+                //    {
+                //        commandRemote.Parameters.Add("@Serial", System.Data.SqlDbType.NVarChar).Value = txtUnitSN.Text;
+                //        commandRemote.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.PN;
+                //        commandRemote.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.EventName;
+                //        commandRemote.Parameters.Add("@StartTime", System.Data.SqlDbType.DateTime).Value = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
+                //        commandRemote.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.UserID;
+                //        commandRemote.Parameters.Add("@ConfirmedResult", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.Result;
+                //        commandRemote.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.MFGSpec;
+                //        commandRemote.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWSpec;
+                //        commandRemote.Parameters.Add("@SWRevision", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWRev;
+
+                //        int result = commandRemote.ExecuteNonQuery();
 
 
-                    // Check Error
-                    if (result < 0)
-                    {
-                        MessageBox.Show("Error inserting data into Database!");
-                    }
+                //        // Check Error
+                //        if (result < 0)
+                //        {
+                //            MessageBox.Show("Error inserting data into Database!");
+                //        }
 
-                }
+                //    }
 
-                connRemote.Close();
-                return  str;
+                //    connRemote.Close();
+                //    return  str;
 
             }
 
             catch (SqlException ex)
             {
+                StringBuilder errorMessages = new StringBuilder();
                 for (int i = 0; i < ex.Errors.Count; i++)
                 {
                     errorMessages.Append("Message: " + ex.Errors[i].Message + "\n" +
@@ -537,26 +467,17 @@ namespace TestDataVerificationTool
                 }
 
                 MessageBox.Show(errorMessages.ToString());
-                
-                return null;
 
             }
 
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void UpdateRecordCount(object sender, EventArgs e)
         {
-            rtbStatus.AppendText(System.DateTime.Now + ": Fail Confirmed\n");
-            button1.Enabled = false;
-            button1.BackColor = System.Drawing.Color.Gray;
-            btnConfirm.Enabled = false;
-            btnConfirm.BackColor = System.Drawing.Color.Gray;
-            GlobalSettings.Result = "FAIL";
-            DataUpload();
-            rtbStatus.AppendText(System.DateTime.Now + ": Data Uploaded\n");
-            dataGridView1.DataSource = null;
-            txtUnitSN.Text = "";
-
+            //Data source shows an extra blank row at end, subtract 1 for true count
+            int count =  (this.dataGridView1.Rows.Count == 0 ? 0 : this.dataGridView1.Rows.Count - 1);
+            this.RecordCount.Text = count.ToString();
+            
         }
     }
 

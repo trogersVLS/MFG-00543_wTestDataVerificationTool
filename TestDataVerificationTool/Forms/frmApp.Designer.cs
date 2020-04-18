@@ -44,8 +44,9 @@
             this.lbl1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnFail = new System.Windows.Forms.Button();
             this.operatorID = new System.Windows.Forms.TextBox();
+            this.RecordCount = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -119,6 +120,9 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(12, 178);
@@ -127,6 +131,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(962, 427);
             this.dataGridView1.TabIndex = 75;
             this.dataGridView1.TabStop = false;
+            this.dataGridView1.DataSourceChanged += new System.EventHandler(this.UpdateRecordCount);
             this.dataGridView1.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.DataGridView1_DataError);
             // 
             // label1
@@ -154,6 +159,7 @@
             // 
             // btnConfirm
             // 
+            this.btnConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConfirm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.btnConfirm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.btnConfirm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -165,7 +171,7 @@
             this.btnConfirm.TabIndex = 79;
             this.btnConfirm.Text = "Confirm PASS";
             this.btnConfirm.UseVisualStyleBackColor = false;
-            this.btnConfirm.Click += new System.EventHandler(this.BtnConfirm_Click);
+            this.btnConfirm.Click += new System.EventHandler(this.ButtonConfirm_Click);
             // 
             // lbl1
             // 
@@ -179,9 +185,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 159);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(9, 145);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(115, 13);
+            this.label2.Size = new System.Drawing.Size(193, 20);
             this.label2.TabIndex = 82;
             this.label2.Text = "Test Records to Verify:";
             // 
@@ -194,20 +201,21 @@
             this.lblDescription.TabIndex = 83;
             this.lblDescription.Text = "_";
             // 
-            // button1
+            // btnFail
             // 
-            this.button1.BackColor = System.Drawing.Color.Red;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.button1.Location = new System.Drawing.Point(531, 615);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(196, 69);
-            this.button1.TabIndex = 84;
-            this.button1.Text = "Confirm FAIL";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.btnFail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFail.BackColor = System.Drawing.Color.Red;
+            this.btnFail.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnFail.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFail.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFail.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnFail.Location = new System.Drawing.Point(531, 615);
+            this.btnFail.Name = "btnFail";
+            this.btnFail.Size = new System.Drawing.Size(196, 69);
+            this.btnFail.TabIndex = 84;
+            this.btnFail.Text = "Confirm FAIL";
+            this.btnFail.UseVisualStyleBackColor = false;
+            this.btnFail.Click += new System.EventHandler(this.ButtonFail_Click);
             // 
             // operatorID
             // 
@@ -216,14 +224,26 @@
             this.operatorID.Size = new System.Drawing.Size(121, 20);
             this.operatorID.TabIndex = 85;
             // 
+            // RecordCount
+            // 
+            this.RecordCount.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.RecordCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RecordCount.Location = new System.Drawing.Point(209, 132);
+            this.RecordCount.Name = "RecordCount";
+            this.RecordCount.Size = new System.Drawing.Size(43, 40);
+            this.RecordCount.TabIndex = 86;
+            this.RecordCount.Text = "0";
+            this.RecordCount.UseVisualStyleBackColor = false;
+            // 
             // FrmApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(986, 692);
+            this.Controls.Add(this.RecordCount);
             this.Controls.Add(this.operatorID);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnFail);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lbl1);
@@ -263,8 +283,9 @@
         private System.Windows.Forms.Label lbl1;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnFail;
         private System.Windows.Forms.TextBox operatorID;
+        private System.Windows.Forms.Button RecordCount;
     }
 }
 

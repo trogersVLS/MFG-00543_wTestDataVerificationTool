@@ -45,7 +45,7 @@
     <OutputPath>bin\Release_TEST\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'KokomoRelease|AnyCPU'">
-      <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\KokomoRelease\</OutputPath>
@@ -66,6 +66,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatabaseManager\DBManager.cs" />
     <Compile Include="FileManager\FileManager.cs" />
     <Compile Include="Forms\frmAbout.cs">
       <SubType>Form</SubType>
@@ -131,6 +133,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Settings.xml" />
     <Content Include="vlslogo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -154,4 +157,9 @@
     <!--Publish copies the untransformed App.config to deployment directory so overwrite it-->
     <Copy Condition="Exists('$(DeployedConfig)')" SourceFiles="$(IntermediateOutputPath)$(TargetFileName).config" DestinationFiles="$(DeployedConfig)" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>cd $(TargerDir)
+del Settings.xml
+cp ..\..\Settings.xml .</PreBuildEvent>
+  </PropertyGroup>
 </Project>

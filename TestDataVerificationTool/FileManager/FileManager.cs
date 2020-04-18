@@ -23,7 +23,7 @@ namespace TestDataVerificationTool
         public static void ValidateFiles()
         {
             
-            string SettingsPath = ConfigurationManager.AppSettings["config_path"];
+            string SettingsPath = ConfigurationManager.AppSettings["ConfigPath"];
 
             //Settings is read-only.
             if (!File.Exists(SettingsPath))
