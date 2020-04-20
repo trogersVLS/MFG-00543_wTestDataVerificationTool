@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Reflection;
 
 
 
@@ -17,8 +18,9 @@ namespace TestDataVerificationTool
 {
     public partial class FrmApp : Form
     {
-        
 
+        readonly string VERSION = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." +
+                                  Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
         public FrmApp()
         {
             InitializeComponent();
@@ -31,6 +33,7 @@ namespace TestDataVerificationTool
             btnFail.BackColor = System.Drawing.Color.Gray;
             operatorID.Text = GlobalSettings.UserID; ;
             lblDescription.Text = "";
+            this.Text += " v" + VERSION;
         }
 
         private void ShowToolStripMenuItem_Click(object sender, EventArgs e)

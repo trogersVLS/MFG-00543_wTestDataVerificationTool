@@ -12,8 +12,24 @@
     <Description>Assy, Exhalation Control Module</Description>
     <ST>StartDateTime</ST>
   </partnumber>
+  
+  <partnumber pn="PRT-00127-001">
+    <Table>Production_Test_Exhalation_Control_Module</Table>
+    <Description>Assy, Exhalation Control Module</Description>
+    <ST>StartDateTime</ST>
+  </partnumber>
 
   <partnumber pn="PRT-00160-001">
+    <Table>Production_Test_InletAccumulator</Table>
+    <Description>Assembly, Inlet Accumulator</Description>
+    <ST>StartTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-00160-002">
+    <Table>Production_Test_InletAccumulator</Table>
+    <Description>Assembly, Inlet Accumulator</Description>
+    <ST>StartTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-00160-003">
     <Table>Production_Test_InletAccumulator</Table>
     <Description>Assembly, Inlet Accumulator</Description>
     <ST>StartTime</ST>
@@ -58,8 +74,18 @@
     <Description>Assembly, External Flow Module</Description>
     <ST>StartDateTime</ST>
   </partnumber>
+  <partnumber pn="PRT-00360-001">
+    <Table>Production_Test_External_Flow</Table>
+    <Description>Assembly, External Flow Module</Description>
+    <ST>StartDateTime</ST>
+  </partnumber>
 
   <partnumber pn="PRT-00368-000">
+    <Table>Production_Test_Internal_Flow</Table>
+    <Description>Assembly, Internal Flow Transducer</Description>
+    <ST>StartDateTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-00368-001">
     <Table>Production_Test_Internal_Flow</Table>
     <Description>Assembly, Internal Flow Transducer</Description>
     <ST>StartDateTime</ST>
@@ -151,6 +177,11 @@
     <ST>StartTime</ST>
   </partnumber>
   <partnumber pn="PRT-01183-000">
+    <Table>Production_Test_Centerband</Table>
+    <Description>Assembly, Center Band, V+PRO</Description>
+    <ST>StartTime</ST>
+  </partnumber>
+  <partnumber pn="PRT-01183-001">
     <Table>Production_Test_Centerband</Table>
     <Description>Assembly, Center Band, V+PRO</Description>
     <ST>StartTime</ST>
