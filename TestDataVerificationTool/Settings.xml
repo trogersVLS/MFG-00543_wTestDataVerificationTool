@@ -12,10 +12,9 @@
     <Description>Assy, Exhalation Control Module</Description>
     <ST>StartDateTime</ST>
   </partnumber>
-  
   <partnumber pn="PRT-00127-001">
     <Table>Production_Test_Exhalation_Control_Module</Table>
-    <Description>Assy, Exhalation Control Module</Description>
+    <Description>Assy, Exhalation Control Module, Tin</Description>
     <ST>StartDateTime</ST>
   </partnumber>
 
@@ -26,12 +25,12 @@
   </partnumber>
   <partnumber pn="PRT-00160-002">
     <Table>Production_Test_InletAccumulator</Table>
-    <Description>Assembly, Inlet Accumulator</Description>
+    <Description>Assembly, Inlet Accumulator, VC Standard</Description>
     <ST>StartTime</ST>
   </partnumber>
   <partnumber pn="PRT-00160-003">
     <Table>Production_Test_InletAccumulator</Table>
-    <Description>Assembly, Inlet Accumulator</Description>
+    <Description>Assembly, Inlet Accumulator, Tin Connector</Description>
     <ST>StartTime</ST>
   </partnumber>
 
@@ -52,6 +51,11 @@
     <ST>StartDateTime</ST>
   </partnumber>
 
+  <partnumber pn="PRT-00250-000">
+    <Table>Production_Test_CoughAssist</Table>
+    <Description>Assembly, Cough Assist Valve</Description>
+    <ST>StartTime</ST>
+  </partnumber>
   <partnumber pn="PRT-00250-001">
     <Table>Production_Test_CoughAssist</Table>
     <Description>Assembly, Cough Assist Valve</Description>
@@ -59,10 +63,15 @@
   </partnumber>
   <partnumber pn="PRT-01165-000">
     <Table>Production_Test_CoughAssist</Table>
-    <Description>Assembly, Intermediate COugh Assist, Pass Through</Description>
+    <Description>Assembly, Intermediate Cough Assist, Pass Through</Description>
     <ST>StartTime</ST>
   </partnumber>
 
+  <partnumber pn="PRT-00320-000">
+    <Table>Production_Test_O2Regulator</Table>
+    <Description>Assembly, Oxygen Regulator Valves</Description>
+    <ST>StartTime</ST>
+  </partnumber>
   <partnumber pn="PRT-00320-100">
     <Table>Production_Test_O2Regulator</Table>
     <Description>Assembly, Oxygen Regulator Valves</Description>
@@ -76,7 +85,7 @@
   </partnumber>
   <partnumber pn="PRT-00360-001">
     <Table>Production_Test_External_Flow</Table>
-    <Description>Assembly, External Flow Module</Description>
+    <Description>Assembly, External Flow Module, Tin Connector</Description>
     <ST>StartDateTime</ST>
   </partnumber>
 
@@ -87,7 +96,7 @@
   </partnumber>
   <partnumber pn="PRT-00368-001">
     <Table>Production_Test_Internal_Flow</Table>
-    <Description>Assembly, Internal Flow Transducer</Description>
+    <Description>Assembly, Internal Flow Transducer, Tin Connector</Description>
     <ST>StartDateTime</ST>
   </partnumber>
 
@@ -125,9 +134,19 @@
   </partnumber>
 
 
+    <partnumber pn="PRT-01060-000">
+    <Table>Production_Test_O2_Sensor</Table>
+    <Description>PCA, Calibrated, OAX Bd, TPS62130</Description>
+    <ST>StartDateTime</ST>
+  </partnumber>
   <partnumber pn="PRT-01060-001">
     <Table>Production_Test_O2_Sensor</Table>
     <Description>PCA, Calibrated, OAX Bd, TPS62130</Description>
+    <ST>StartDateTime</ST>
+  </partnumber>
+    <partnumber pn="PRT-01060-002">
+    <Table>Production_Test_O2_Sensor</Table>
+    <Description>PCA, Calibrated, OAX Bd, Tin Connector</Description>
     <ST>StartDateTime</ST>
   </partnumber>
 
@@ -228,16 +247,19 @@
     <Table>Production_Test_Final_Test</Table>
     <Description>Assembly, VCSN+PRO</Description>
     <ST>StartDateTime</ST>
+    <NumTests></NumTests>
   </partnumber>
   <partnumber pn="PRT-01185-000">
     <Table>Production_Test_Final_Test</Table>
     <Description>Assembly, V+PRO</Description>
     <ST>StartDateTime</ST>
+    <NumTests></NumTests>
   </partnumber>
   <partnumber pn="PRT-01201-000">
     <Table>Production_Test_Final_Test</Table>
     <Description>Assembly, V+PRO Emergency</Description>
     <ST>StartDateTime</ST>
+    <NumTests></NumTests>
   </partnumber>
 
   <stationconfig>
@@ -249,21 +271,4 @@
     <DB>01</DB>
     <ReadOnly>false</ReadOnly>
   </stationconfig>
-
-
-  <operatorID>
-    <operator>cmassie</operator>
-  </operatorID>
-  <operatorID>
-    <operator>dklein</operator>
-  </operatorID>
-  <operatorID>
-    <operator>oplumridge</operator>
-  </operatorID>
-  <operatorID>
-    <operator>risip</operator>
-  </operatorID>
-  <operatorID>
-    <operator>tmao</operator>
-  </operatorID>
 </testconfigs>

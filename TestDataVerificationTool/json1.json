@@ -1,0 +1,62 @@
+{
+  "parts": [
+
+    {
+      "partnumber" : "PRT-00100-000",
+      "description" : "Assembly, Radial Compressor",
+      "datatable" : "Production_Test_Compressor",
+      "starttimefieldname" : "StartDateTime"
+    },
+    {
+      "partnumber" : "PRT-00127-000",
+      "description" : "Assy, Exhalation Control Module",
+      "datatable" : "Production_Test_Exhalation_Control_Module",
+      "starttimefieldname" : "StartDateTime"
+    },
+    {
+      "partnumber" : "PRT-00127-001",
+      "description" : "Assy, Exhalation Control Module, Tin",
+      "datatable" : "Production_Test_Exhalation_Control_Module",
+      "starttimefieldname" : "StartDateTime"
+    },
+    {
+      "partnumber" : "PRT-00160-001",
+      "description" : "Assembly, Inlet Accumulator",
+      "datatable" : "Production_Test_InletAccumulator",
+      "starttimefieldname" : "StartTime"
+    },
+    {
+      "partnumber" : "PRT-00160-002",
+      "description" : "Assembly, Inlet Accumulator, VC Standard",
+      "datatable" : "Production_Test_InletAccumulator",
+      "starttimefieldname" : "StartTime"
+    },
+    {
+      "partnumber" : "PRT-00160-003",
+      "description" : "Assembly, Inlet Accumulator, Tin",
+      "datatable" : "Production_Test_InletAccumulator",
+      "starttimefieldname" : "StartTime"
+    },
+    {
+      "partnumber" : "PRT-00202-001",
+      "description" : "Assembly, Rotary Valve, Function Select",
+      "datatable" : "Production_Test_Rotary_Valve",
+      "starttimefieldname" : "StartDateTime"
+    },
+    {
+      "partnumber" : "PRT-00202-002",
+      "description" : "Assembly, Rotary Valve, Oxygen",
+      "datatable" : "Production_Test_Rotary_Valve",
+      "starttimefieldname" : "StartDateTime"
+    },
+    {
+      "partnumber" : "PRT-00254-000",
+      "description" : "Assembly, O2 Metering Valve",
+      "datatable" : "Production_Test_Metering_Valve",
+      "starttimefieldname" : "StartDateTime"
+    },
+    
+    
+    
+  ]
+}

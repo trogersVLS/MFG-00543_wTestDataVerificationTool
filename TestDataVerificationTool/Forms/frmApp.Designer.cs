@@ -47,8 +47,16 @@
             this.btnFail = new System.Windows.Forms.Button();
             this.operatorID = new System.Windows.Forms.TextBox();
             this.RecordCount = new System.Windows.Forms.Button();
+            this.panelFinalAccept = new System.Windows.Forms.Panel();
+            this.btnFT2 = new System.Windows.Forms.Button();
+            this.btnFT1 = new System.Windows.Forms.Button();
+            this.lblFT2 = new System.Windows.Forms.Label();
+            this.lblFT1 = new System.Windows.Forms.Label();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkMultipleSerialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panelFinalAccept.SuspendLayout();
             this.SuspendLayout();
             // 
             // exitToolStripMenuItem
@@ -78,7 +86,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.aboutToolStripMenuItem});
+            this.aboutToolStripMenuItem,
+            this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(986, 24);
@@ -125,10 +134,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 178);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 208);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(962, 427);
+            this.dataGridView1.Size = new System.Drawing.Size(962, 397);
             this.dataGridView1.TabIndex = 75;
             this.dataGridView1.TabStop = false;
             this.dataGridView1.DataSourceChanged += new System.EventHandler(this.UpdateRecordCount);
@@ -186,7 +195,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(9, 145);
+            this.label2.Location = new System.Drawing.Point(16, 112);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(193, 20);
             this.label2.TabIndex = 82;
@@ -228,12 +237,81 @@
             // 
             this.RecordCount.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.RecordCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RecordCount.Location = new System.Drawing.Point(209, 132);
+            this.RecordCount.Location = new System.Drawing.Point(208, 96);
             this.RecordCount.Name = "RecordCount";
             this.RecordCount.Size = new System.Drawing.Size(43, 40);
             this.RecordCount.TabIndex = 86;
             this.RecordCount.Text = "0";
             this.RecordCount.UseVisualStyleBackColor = false;
+            // 
+            // panelFinalAccept
+            // 
+            this.panelFinalAccept.Controls.Add(this.btnFT2);
+            this.panelFinalAccept.Controls.Add(this.btnFT1);
+            this.panelFinalAccept.Controls.Add(this.lblFT2);
+            this.panelFinalAccept.Controls.Add(this.lblFT1);
+            this.panelFinalAccept.Location = new System.Drawing.Point(16, 144);
+            this.panelFinalAccept.Name = "panelFinalAccept";
+            this.panelFinalAccept.Size = new System.Drawing.Size(256, 48);
+            this.panelFinalAccept.TabIndex = 87;
+            this.panelFinalAccept.Visible = false;
+            // 
+            // btnFT2
+            // 
+            this.btnFT2.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.btnFT2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFT2.Location = new System.Drawing.Point(192, 0);
+            this.btnFT2.Name = "btnFT2";
+            this.btnFT2.Size = new System.Drawing.Size(43, 40);
+            this.btnFT2.TabIndex = 90;
+            this.btnFT2.Text = "0";
+            this.btnFT2.UseVisualStyleBackColor = false;
+            // 
+            // btnFT1
+            // 
+            this.btnFT1.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.btnFT1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFT1.Location = new System.Drawing.Point(64, 0);
+            this.btnFT1.Name = "btnFT1";
+            this.btnFT1.Size = new System.Drawing.Size(43, 40);
+            this.btnFT1.TabIndex = 88;
+            this.btnFT1.Text = "0";
+            this.btnFT1.UseVisualStyleBackColor = false;
+            // 
+            // lblFT2
+            // 
+            this.lblFT2.AutoSize = true;
+            this.lblFT2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFT2.Location = new System.Drawing.Point(144, 16);
+            this.lblFT2.Name = "lblFT2";
+            this.lblFT2.Size = new System.Drawing.Size(45, 20);
+            this.lblFT2.TabIndex = 89;
+            this.lblFT2.Text = "FT2:";
+            // 
+            // lblFT1
+            // 
+            this.lblFT1.AutoSize = true;
+            this.lblFT1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFT1.Location = new System.Drawing.Point(16, 16);
+            this.lblFT1.Name = "lblFT1";
+            this.lblFT1.Size = new System.Drawing.Size(45, 20);
+            this.lblFT1.TabIndex = 88;
+            this.lblFT1.Text = "FT1:";
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.checkMultipleSerialsToolStripMenuItem});
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // checkMultipleSerialsToolStripMenuItem
+            // 
+            this.checkMultipleSerialsToolStripMenuItem.Name = "checkMultipleSerialsToolStripMenuItem";
+            this.checkMultipleSerialsToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.checkMultipleSerialsToolStripMenuItem.Text = "Check multiple serials";
+            this.checkMultipleSerialsToolStripMenuItem.Click += new System.EventHandler(this.checkMultipleSerialsToolStripMenuItem_Click);
             // 
             // FrmApp
             // 
@@ -241,6 +319,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(986, 692);
+            this.Controls.Add(this.panelFinalAccept);
             this.Controls.Add(this.RecordCount);
             this.Controls.Add(this.operatorID);
             this.Controls.Add(this.btnFail);
@@ -262,6 +341,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panelFinalAccept.ResumeLayout(false);
+            this.panelFinalAccept.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,6 +367,13 @@
         private System.Windows.Forms.Button btnFail;
         private System.Windows.Forms.TextBox operatorID;
         private System.Windows.Forms.Button RecordCount;
+        private System.Windows.Forms.Panel panelFinalAccept;
+        private System.Windows.Forms.Button btnFT2;
+        private System.Windows.Forms.Button btnFT1;
+        private System.Windows.Forms.Label lblFT2;
+        private System.Windows.Forms.Label lblFT1;
+        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkMultipleSerialsToolStripMenuItem;
     }
 }
 

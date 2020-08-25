@@ -24,6 +24,16 @@ namespace TestDataVerificationTool
         public FrmApp()
         {
             InitializeComponent();
+            if(ConfigurationManager.AppSettings["Environment"] == "Debug")
+            {
+                this.debugToolStripMenuItem.Visible = true;
+                this.debugToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                this.debugToolStripMenuItem.Visible = false;
+                this.debugToolStripMenuItem.Enabled = false;
+            }
         }
         private void FrmApp_Load(object sender, EventArgs e)
         {
@@ -176,7 +186,7 @@ namespace TestDataVerificationTool
 
                 if (bDBState == false)
                 {
-                    MessageBox.Show("The SQL Database is not found or is disconnected. Please this record cannot be saved, please contact IT administrator or test engineer.\n");
+                    MessageBox.Show("The SQL Database is not found or is disconnected. Please contact IT administrator or test engineer.\n");
                     rtbStatus.AppendText(System.DateTime.Now + ": Database is not found \n");
 
                 }
@@ -217,34 +227,43 @@ namespace TestDataVerificationTool
         {   
             //Assumed that all rows are ordered by time.
             List<string> test_names = new List<string>();
-            List<int> duplicate_index = new List<int>();
-            foreach(DataGridViewRow row in dataGridView1.Rows)
-            { 
-                string test = (row.Cells[dataGridView1.Columns["TestName"].Index].Value ?? "").ToString();
-                if (test_names.Contains(test))
+            List<int> remove_index_list = new List<int>();
+            DataTable data = (DataTable)dataGridView1.DataSource;
+
+            // Remove all rows that are before burn-in
+            for(int i = data.Rows.Count - 1; i >= 0; i--)
+            {
+                var status = data.Rows[i].Field<string>("MfgStatus");
+                if (status != null)
                 {
-                    duplicate_index.Add(row.Index);
-                }
-                else
-                {   if (test != "")
+                    if (!status.Contains("After"))
                     {
-                        test_names.Add(test);
+                        data.Rows[i].Delete();
                     }
                 }
             }
-            DataTable data = (DataTable)dataGridView1.DataSource;
-            duplicate_index.Sort();
-            duplicate_index.Reverse();
-            foreach(int i in duplicate_index)
+            data.AcceptChanges();
+            // Remove duplicate tests
+            for (int i = 0 ; i < data.Rows.Count ; i++)
             {
-                data.Rows[i].Delete();
+                if (!test_names.Contains(data.Rows[i].Field<string>("TestName")))
+                {
+                    test_names.Add(data.Rows[i].Field<string>("TestName"));
+                }
+                else
+                {
+                    data.Rows[i].Delete();
+                    data.AcceptChanges();
+                    i--;
+                }
             }
+
             dataGridView1.DataSource = data;
             UpdateRecordCount(null, null);
-            //dataGridView1.Rows.RemoveAt(0);
+
         }
 
-       
+
 
 
         public void LoadXML(string partnumber)
@@ -326,9 +345,7 @@ namespace TestDataVerificationTool
                         }
                         return s;
                     }
-
                 }
-
             }
 
             catch (Exception ex)
@@ -400,60 +417,6 @@ namespace TestDataVerificationTool
                                              GlobalSettings.Result, GlobalSettings.MFGSpec, 
                                              GlobalSettings.SWSpec, GlobalSettings.SWRev);
 
-
-
-                //    SqlConnection connRemote = new SqlConnection(@"Data Source = Ventec-SQL" + GlobalSettings.DB + "; " +
-                //                                                  "Integrated Security = SSPI; " +
-                //                                                  "PersistSecurityInfo = False; " +
-                //                                                  "Initial Catalog = Production_Test_Data");
-
-                //    connRemote.Open();
-
-                //    string query = "INSERT INTO dbo.Production_Test_AssemblyVerification (Serial," +
-                //                                                "PartNumber," +
-                //                                                "EventName," +
-                //                                                "StartTime," +
-                //                                                "OperatorID," +
-                //                                                "ConfirmedResult," +
-                //                                                "MFGSpec," +
-                //                                                "SWSpec," +
-                //                                                "SWRevision)" +
-                //                                        "VALUES (@Serial," +
-                //                                                "@PartNumber," +
-                //                                                "@EventName," +
-                //                                                "@StartTime," +
-                //                                                "@OperatorID," +
-                //                                                "@ConfirmedResult," +
-                //                                                "@MFGSpec," +
-                //                                                "@SWSpec," +
-                //                                                "@SWRevision);";
-
-                //    using (SqlCommand commandRemote = new SqlCommand(query, connRemote))
-                //    {
-                //        commandRemote.Parameters.Add("@Serial", System.Data.SqlDbType.NVarChar).Value = txtUnitSN.Text;
-                //        commandRemote.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.PN;
-                //        commandRemote.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.EventName;
-                //        commandRemote.Parameters.Add("@StartTime", System.Data.SqlDbType.DateTime).Value = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
-                //        commandRemote.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.UserID;
-                //        commandRemote.Parameters.Add("@ConfirmedResult", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.Result;
-                //        commandRemote.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.MFGSpec;
-                //        commandRemote.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWSpec;
-                //        commandRemote.Parameters.Add("@SWRevision", System.Data.SqlDbType.NVarChar).Value = GlobalSettings.SWRev;
-
-                //        int result = commandRemote.ExecuteNonQuery();
-
-
-                //        // Check Error
-                //        if (result < 0)
-                //        {
-                //            MessageBox.Show("Error inserting data into Database!");
-                //        }
-
-                //    }
-
-                //    connRemote.Close();
-                //    return  str;
-
             }
 
             catch (SqlException ex)
@@ -481,6 +444,15 @@ namespace TestDataVerificationTool
             int count =  (this.dataGridView1.Rows.Count == 0 ? 0 : this.dataGridView1.Rows.Count - 1);
             this.RecordCount.Text = count.ToString();
             
+        }
+
+        private void checkMultipleSerialsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(ConfigurationManager.AppSettings["Environment"] == "Debug")
+            {
+                this.txtUnitSN.Text = "112765";
+
+            }
         }
     }
 

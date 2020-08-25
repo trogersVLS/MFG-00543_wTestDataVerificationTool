@@ -133,23 +133,23 @@ namespace TestDataVerificationTool
             query.Connection = conn;
             query.CommandType = CommandType.Text;
             query.CommandText = "INSERT INTO dbo.Production_Test_AssemblyVerification (Serial," +
-                                                                                "PartNumber," +
-                                                                                "EventName," +
-                                                                                "StartTime," +
-                                                                                "OperatorID," +
-                                                                                "ConfirmedResult," +
-                                                                                "MFGSpec," +
-                                                                                "SWSpec," +
-                                                                                "SWRevision)" +
-                                                                        "VALUES (@Serial," +
-                                                                                "@PartNumber," +
-                                                                                "@EventName," +
-                                                                                "@StartTime," +
-                                                                                "@OperatorID," +
-                                                                                "@ConfirmedResult," +
-                                                                                "@MFGSpec," +
-                                                                                "@SWSpec," +
-                                                                                "@SWRevision);";
+                                                                                    "PartNumber," +
+                                                                                    "EventName," +
+                                                                                    "StartTime," +
+                                                                                    "OperatorID," +
+                                                                                    "ConfirmedResult," +
+                                                                                    "MFGSpec," +
+                                                                                    "SWSpec," +
+                                                                                    "SWRevision)" +
+                                                                            "VALUES (@Serial," +
+                                                                                    "@PartNumber," +
+                                                                                    "@EventName," +
+                                                                                    "@StartTime," +
+                                                                                    "@OperatorID," +
+                                                                                    "@ConfirmedResult," +
+                                                                                    "@MFGSpec," +
+                                                                                    "@SWSpec," +
+                                                                                    "@SWRevision);";
 
             query.Parameters.Add("@Serial", System.Data.SqlDbType.NVarChar).Value = SerialNum;
             query.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = PartNumber;
