@@ -1,133 +1,172 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
+using System.Resources;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace TestDataVerificationTool
 {
     public class DBManager
     {
-        private static SqlConnection ConnectToDatabase(string Location)
+
+        const string DeviceDataQuery = @"SELECT
+                                 [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestType]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[NC]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestResult]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[MfgStatus]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StationID]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[OperatorID]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLocation]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLowLimit]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestHighLimit]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestValue]                              
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSpecDocument]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSoftwareRevision]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestAbortCode]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[PartNumber]
+                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[O2TimerOverride]
+                                
+                                FROM
+                                    (SELECT [TestName], [MfgStatus], MAX([StartDateTime]) AS last_tested
+                                    FROM [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+                                    WHERE ([Serial] LIKE @Serial) AND ([MfgStatus] LIKE @FT_Keyword)
+                                    GROUP BY [TestName], [MfgStatus]) AS latest_tests
+                                INNER JOIN
+                                [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+                                ON
+                                [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName] = latest_tests.[TestName] AND
+                                [Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime] = latest_tests.last_tested
+                                ORDER BY[StartDateTime] DESC";
+        const string SubAssemblyDataQuery = @"SELECT * FROM dbo.{0} WHERE Serial LIKE @Serial ORDER BY [{1}] DESC";
+        const string PartNumberQuery = @"SELECT DISTINCT [StockCode], [SerialDescription] FROM [InvSerialHead] WHERE [Serial] = @Serial";
+
+        const string SerialParam = "@Serial";
+        const string DateTimeParam = "@DateTimeCol";
+        const string FTKeywordParam = "@FT_Keyword";
+        
+
+
+        public static SqlConnection ConnectToDatabase(string Location)
         {
             SqlConnection conn =
                 new SqlConnection(ConfigurationManager.ConnectionStrings[Location].ConnectionString);
+            try
+            {
+                conn.Open();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An exception has occurred while connecting to the <{0}> database:\n{1}", e.Message, Location));
+                throw e;
+            }
+
 
             return conn;
         }
 
-        public static DataTable GetTestRecords(string TableName, string SerialNum, string OrderBy, string PN)
+        public static DataTable GetTestRecords(string TableName, string SerialNum, string OrderBy, ref SqlConnection conn)
         {
-            if (TableName == "Production_Test_Final_Test") return GetFinalTestRecords(TableName, SerialNum, OrderBy, PN); // Final test 
-
-            SqlConnection conn = ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDB"]);
             SqlCommand query = new SqlCommand();
 
             query.Connection = conn;
             query.CommandType = CommandType.Text;
-            query.CommandText = "SELECT * FROM dbo." + TableName + " " +
-                                "WHERE Serial = '" + SerialNum + "' " +
-                                "ORDER BY " + OrderBy + " desc";
+            query.CommandText = string.Format(SubAssemblyDataQuery, TableName, OrderBy);
+            query.Parameters.AddWithValue(SerialParam, SerialNum);
+            //query.Parameters/*.*/AddWithValue(DateTimeParam, OrderBy);
 
             DataTable Records = new DataTable();
-            using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(query))
+            try
             {
-                sqlDataAdap.Fill(Records);
+                using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(query))
+                {
+                    sqlDataAdap.Fill(Records);
+                }
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(string.Format("An exception has occurred while retrieving test records:\n{0}", e.Message));
+                throw e;
             }
 
             return Records;
         }
-        public static DataTable GetFinalTestRecords(string TableName, string SerialNum, string OrderBy, string PN)
-        {
-            string columns = "[TestType]" +
-                              ",[Serial]" +
-                              ",[NC]" +
-                              ",[TestName]" +
-                              ",[TestLowLimit]" +
-                              ",[TestHighLimit]" +
-                              ",[TestValue]" +
-                              ",[TestResult]" +
-                              ",[OperatorID]" +
-                              ",[StationID]" +
-                              ",[StartDateTime]" +
-                              ",[StopDateTime]" +
-                              ",[TestSpecDocument]" +
-                              ",[TestSoftwareRevision]" +
-                              ",[TestAbortCode]" +
-                              ",[OverallPassFail]" +
-                              ",[Alarms]" +
-                              ",[AlarmDetails]" +
-                              ",[PartNumber]" +
-                              ",[O2TimerOverride]" +
-                              ",[UDI]" +
-                              ",[TestLocation]" +
-                              ",[MfgStatus]";
 
-            SqlConnection conn = ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDB"]);
+        public static DataTable GetFinalTestRecords(string TableName, string SerialNum, string OrderBy, ref SqlConnection conn)
+        {
+            string FT_Keyword = ConfigurationManager.AppSettings["FT_Keyword"];
+
             SqlCommand query = new SqlCommand();
 
             query.Connection = conn;
             query.CommandType = CommandType.Text;
-            query.CommandText = "SELECT " + columns + " FROM dbo." + TableName + " " +
-                                "WHERE Serial = '" + SerialNum + "' " +
-                                "ORDER BY " + OrderBy + " desc";
+            query.CommandText = DeviceDataQuery;
+            query.Parameters.AddWithValue(SerialParam, SerialNum);
+            query.Parameters.AddWithValue(FTKeywordParam, FT_Keyword);
+            query.Parameters.AddWithValue(DateTimeParam, OrderBy);
 
             DataTable Records = new DataTable();
-            using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(query))
+            try
             {
-                sqlDataAdap.Fill(Records);
+                using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(query))
+                {
+                    sqlDataAdap.Fill(Records);
+                }
             }
-
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An exception has occurred while retrieving test records:\n{0}", e.Message));
+                throw e;
+            }
 
             return Records;
         }
 
-        public static string GetPartNumber(string SerialNum)
+        public static (string, string) GetPartNumber(string SerialNum, ref SqlConnection conn)
         {
             string partnumber = null;
-            SqlConnection conn = ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
+            string description = null;
+            
             SqlCommand query = new SqlCommand();
 
             query.Connection = conn;
             query.CommandType = CommandType.Text;
-            query.CommandText = "Select distinct StockCode " +
-                                "From InvSerialTrn " +
-                                "Where Serial = '" + SerialNum + "'";
-
-            conn.Open();
-            using (var reader = query.ExecuteReader())
+            query.CommandText = PartNumberQuery;
+            query.Parameters.AddWithValue(SerialParam, SerialNum);
+            try
             {
-                if (reader.HasRows)
+                using (var reader = query.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if (reader.HasRows)
                     {
-                        partnumber = Convert.ToString(reader["StockCode"]);
+                        while (reader.Read())
+                        {
+                            partnumber = Convert.ToString(reader["StockCode"]);
+                            description = Convert.ToString(reader["SerialDescription"]);
+                        }
                     }
                 }
-                else
-                {
-                    partnumber = null;
-                }
+                query.Dispose();
             }
-            query.Dispose();
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An exception has occurred while retrieving the part number:\n{0}", e.Message));
+                throw e;
+            }
 
-            return partnumber;
+            return (partnumber, description);
         }
 
-        public static void InsertVerification(string SerialNum,
-                                                string PartNumber,
-                                                string EventName,
-                                                string OperatorID,
-                                                string Result,
-                                                string MFGSpec,
-                                                string SWSpec,
-                                                string SWRevision)
+        public static void InsertVerification(string SerialNum, string PartNumber, string OperatorID, string Result, ref SqlConnection conn)                                  
         {
-
-            SqlConnection conn = ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["VerificationDB"]);
+            if (!MassageConnection(ref conn))
+            {
+                return;
+            }
             SqlCommand query = new SqlCommand();
 
             query.Connection = conn;
@@ -153,15 +192,14 @@ namespace TestDataVerificationTool
 
             query.Parameters.Add("@Serial", System.Data.SqlDbType.NVarChar).Value = SerialNum;
             query.Parameters.Add("@PartNumber", System.Data.SqlDbType.NVarChar).Value = PartNumber;
-            query.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = EventName;
+            query.Parameters.Add("@EventName", System.Data.SqlDbType.NVarChar).Value = "TestDataVerification";
             query.Parameters.Add("@StartTime", System.Data.SqlDbType.DateTime).Value = DateTime.Now.ToString("MM-dd-yyyy hh:mm:ss tt");
             query.Parameters.Add("@OperatorID", System.Data.SqlDbType.NVarChar).Value = OperatorID;
             query.Parameters.Add("@ConfirmedResult", System.Data.SqlDbType.NVarChar).Value = Result;
-            query.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = MFGSpec;
-            query.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = SWSpec;
-            query.Parameters.Add("@SWRevision", System.Data.SqlDbType.NVarChar).Value = SWRevision;
+            query.Parameters.Add("@MFGSpec", System.Data.SqlDbType.NVarChar).Value = ConfigurationManager.AppSettings["MFGSpec"];
+            query.Parameters.Add("@SWSpec", System.Data.SqlDbType.NVarChar).Value = ConfigurationManager.AppSettings["SWSpec"];
+            query.Parameters.Add("@SWRevision", System.Data.SqlDbType.NVarChar).Value = ConfigurationManager.AppSettings["Revision"];
 
-            conn.Open();
             try
             {
                 int result = query.ExecuteNonQuery();
@@ -171,15 +209,30 @@ namespace TestDataVerificationTool
                     throw new Exception("Error inserting verification data into database");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                conn.Close();
                 throw e;
             }
-            conn.Close();
+        }
 
+
+
+        private static bool MassageConnection(ref SqlConnection conn)
+        {
+            SqlCommand query = new SqlCommand("SELECT 1", conn);
+            try
+            {
+                var ret = (int)query.ExecuteScalar();
+
+                if (ret == 1) return true;
+                else return false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
             
-
+        
         }
     }
 }

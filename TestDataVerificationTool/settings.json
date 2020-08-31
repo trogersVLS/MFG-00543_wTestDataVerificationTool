@@ -1,0 +1,79 @@
+{
+  "TestTables": [
+    {
+      "TableName": "Production_Test_AssemblyVerification",
+      "Keyword": "Verification",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Centerband",
+      "Keyword": "Center",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Compressor",
+      "Keyword": "Compressor",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_CoughAssist",
+      "Keyword": "Cough",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Exhalation_Control_Module",
+      "Keyword": "Exhalation",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_External_Flow",
+      "Keyword": "External Flow",
+      "DateTimeCol" : "StartDateTime" 
+    },
+    {
+      "TableName": "Production_Test_External_Oxygen_Controller",
+      "Keyword": "External Oxygen",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_Final_Test",
+      "Keyword": "Assembly, V",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_InletAccumulator",
+      "Keyword": "Inlet Accumulator",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Internal_Flow",
+      "Keyword": "Internal Flow",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_MainChassis",
+      "Keyword": "Chassis",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Metering_Valve",
+      "Keyword": "Metering",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_O2_Sensor",
+      "Keyword": "OAX",
+      "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_OxygenAccumulator",
+      "Keyword": "Oxygen Accumulator",
+      "DateTimeCol": "StartTime"
+    },
+    {
+      "TableName": "Production_Test_Rotary_Valve",
+      "Keyword": "Rotary Valve",
+      "DateTimeCol": "StartDateTime"
+    }
+  ]
+}
