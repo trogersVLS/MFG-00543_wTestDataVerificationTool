@@ -11,37 +11,77 @@ namespace TestDataVerificationTool
     public class DBManager
     {
 
-        const string DeviceDataQuery = @"SELECT
-                                 [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestType]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[NC]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestResult]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[MfgStatus]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StationID]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[OperatorID]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLocation]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLowLimit]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestHighLimit]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestValue]                              
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSpecDocument]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSoftwareRevision]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestAbortCode]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[PartNumber]
-                                ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[O2TimerOverride]
+        //const string DeviceDataQuery = @"SELECT
+        //                         [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestType]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[NC]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestResult]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[MfgStatus]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StationID]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[OperatorID]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLocation]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLowLimit]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestHighLimit]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestValue]                              
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSpecDocument]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSoftwareRevision]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestAbortCode]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[PartNumber]
+        //                        ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[O2TimerOverride]
                                 
-                                FROM
-                                    (SELECT [TestName], [MfgStatus], MAX([StartDateTime]) AS last_tested
-                                    FROM [Production_Test_Data].[dbo].[Production_Test_Final_Test]
-                                    WHERE ([Serial] LIKE @Serial) AND ([MfgStatus] LIKE @FT_Keyword)
-                                    GROUP BY [TestName], [MfgStatus]) AS latest_tests
-                                INNER JOIN
-                                [Production_Test_Data].[dbo].[Production_Test_Final_Test]
-                                ON
-                                [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName] = latest_tests.[TestName] AND
-                                [Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime] = latest_tests.last_tested
-                                ORDER BY[StartDateTime] DESC";
+        //                        FROM
+        //                            (SELECT [Serial], [TestName], [MfgStatus], MAX([StartDateTime]) AS last_tested
+        //                            FROM [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+        //                            WHERE ([Serial] LIKE @Serial) AND ([MfgStatus] LIKE @FT_Keyword)
+        //                            GROUP BY [Serial], [TestName], [MfgStatus]) AS latest_tests
+        //                        INNER JOIN
+        //                        [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+        //                        ON
+        //                        [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName] = latest_tests.[TestName] AND
+        //                        [Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime] = latest_tests.last_tested
+        //                        [Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial] = latest_tests.[Serial]
+        //                        ORDER BY[StartDateTime] DESC";
+
+        const string DeviceDataQuery = @"SELECT
+                             [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestType]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[NC]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestResult]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[MfgStatus]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StationID]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[OperatorID]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLocation]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestLowLimit]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestHighLimit]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestValue]                              
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSpecDocument]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestSoftwareRevision]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestAbortCode]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[PartNumber]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[O2TimerOverride]
+                            ,[Production_Test_Data].[dbo].[Production_Test_Final_Test].[OverallPassFail]
+
+                                    FROM
+                            (SELECT[Serial], [TestName], [MfgStatus], MAX([StartDateTime]) AS last_tested
+                            FROM [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+                                WHERE ([Serial] LIKE @Serial) AND ([MfgStatus] LIKE @FT_Keyword)
+                                AND NOT([TestName] LIKE 'UUT%Temperature')
+                                AND NOT([TestName] LIKE 'Oxygen 3%Oxygen Concentration')
+                                AND NOT([TestName] LIKE 'Oxygen 3%Time From Timer')
+                                AND NOT([TestName] LIKE 'Oxygen 1%Alarm%')
+
+                                GROUP BY[Serial], [TestName], [MfgStatus]) AS latest_tests
+                            INNER JOIN
+                            [Production_Test_Data].[dbo].[Production_Test_Final_Test]
+                                    ON
+                            [Production_Test_Data].[dbo].[Production_Test_Final_Test].[TestName] = latest_tests.[TestName] AND
+                            [Production_Test_Data].[dbo].[Production_Test_Final_Test].[StartDateTime] = latest_tests.last_tested AND
+                            [Production_Test_Data].[dbo].[Production_Test_Final_Test].[Serial] = latest_tests.[Serial]
+                            ORDER BY[StartDateTime] DESC";
         const string SubAssemblyDataQuery = @"SELECT * FROM dbo.{0} WHERE Serial LIKE @Serial ORDER BY [{1}] DESC";
         const string PartNumberQuery = @"SELECT DISTINCT [StockCode], [SerialDescription] FROM [InvSerialHead] WHERE [Serial] = @Serial";
 
@@ -62,7 +102,7 @@ namespace TestDataVerificationTool
             catch (Exception e)
             {
                 MessageBox.Show(string.Format("An exception has occurred while connecting to the <{0}> database:\n{1}", e.Message, Location));
-                throw e;
+                //throw e;
             }
 
 

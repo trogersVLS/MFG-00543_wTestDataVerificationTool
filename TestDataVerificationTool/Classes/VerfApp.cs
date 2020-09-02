@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.Configuration;
 
 namespace TestDataVerificationTool
@@ -19,12 +16,25 @@ namespace TestDataVerificationTool
         PartNumber, 
         Database
     }
+    public class FinalDevice
+    {
+        public string partnumber { get; set; }
+        public int numtests { get; set; }
+    }
+
     public class TestTable
     {
         public string TableName { get; set; }
         public string Keyword { get; set; }
         public string DateTimeCol { get; set; }
+        public List<FinalDevice> FinalDevices { get; set; }
     }
+
+    public class Root
+    {
+        public List<TestTable> TestTables { get; set; }
+    }
+
 
     public class Part
     {
@@ -34,10 +44,7 @@ namespace TestDataVerificationTool
         
     }
 
-    public class Root
-    {
-        public List<TestTable> TestTables { get; set; }
-    }
+    
     class VerfApp
     {
         private SqlConnection SysproConn;
@@ -48,16 +55,65 @@ namespace TestDataVerificationTool
         public Part CurrentPart;
         public VerfApp(IProgress<(string message, ACTION_TYPE messageType)> messagePipe)
         {
-            //Initialize database connections
-            this.SysproConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
-            this.TestDataConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDataDB"]);
-
 
             //Initialize TableName Dictionary.
             TestTables = LoadJSON(ConfigurationManager.AppSettings["ConfigPath"]);
-
-
+            //Initialize database connections
+            this.SysproConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
+            this.TestDataConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDataDB"]);
+            if(this.SysproConn == null || this.TestDataConn == null)
+            {
+                throw new Exception("Could not connect to the database");
+            }
         }
+
+        public void Reconnect()
+        {
+            this.SysproConn.Dispose();
+            this.TestDataConn.Dispose();
+            this.SysproConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
+            this.TestDataConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDataDB"]);
+        }
+
+        public bool RequiresTestData(string description)
+        {
+            foreach (TestTable entry in this.TestTables)
+            {
+                if (description.Contains(entry.Keyword))
+                {
+
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool FinalTestNumbersCheck(string partnumber, int passingtests)
+        {   
+            foreach(TestTable parts in TestTables)
+            {
+                if(parts.FinalDevices != null)
+                {
+                    foreach(FinalDevice device in parts.FinalDevices)
+                    {
+                        if (partnumber.Contains(device.partnumber))
+                        {
+                            if(passingtests == device.numtests)
+                            {
+                                return true;
+
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return true;
+        }
+
         //Applications primary functions
         public bool GetTestData(string serial, out DataTable testData, out string partnumber, out string description, out string tablename)
         {
@@ -147,7 +203,7 @@ namespace TestDataVerificationTool
             if (File.Exists(path)) jsonTestTables = File.ReadAllText(path);
             else jsonTestTables = null;
     
-            var tests = JsonSerializer.Deserialize<Root>(jsonTestTables);
+            Root tests = (Root)JsonConvert.DeserializeObject<Root>(jsonTestTables);
             if (tests != null) return tests.TestTables;
             else return null;
             

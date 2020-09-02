@@ -28,7 +28,7 @@
     {
       "TableName": "Production_Test_External_Flow",
       "Keyword": "External Flow",
-      "DateTimeCol" : "StartDateTime" 
+      "DateTimeCol": "StartDateTime"
     },
     {
       "TableName": "Production_Test_External_Oxygen_Controller",
@@ -38,7 +38,38 @@
     {
       "TableName": "Production_Test_Final_Test",
       "Keyword": "Assembly, V",
-      "DateTimeCol": "StartDateTime"
+      "DateTimeCol": "StartDateTime",
+      "FinalDevices": [
+        {
+          "partnumber": "PRT-00490",
+          "numtests": 56
+        },
+        {
+          "partnumber": "PRT-00900",
+          "numtests": 37
+        },
+        {
+          "partnumber": "PRT-01098",
+          "numtests": 29
+        },
+        {
+          "partnumber": "PRT-01100",
+          "numtests": 48
+        },
+        {
+          "partnumber": "PRT-01184",
+          "numtests": 48
+        },
+        {
+          "partnumber": "PRT-01185",
+          "numtests": 29
+        },
+        {
+          "partnumber": "PRT-01201",
+          "numtests": 29
+        }
+      ]
+      
     },
     {
       "TableName": "Production_Test_InletAccumulator",

@@ -10,21 +10,16 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		KokomoRelease|Any CPU = KokomoRelease|Any CPU
-		VLSRelease|Any CPU = VLSRelease|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.KokomoRelease|Any CPU.ActiveCfg = KokomoRelease|Any CPU
-		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.KokomoRelease|Any CPU.Build.0 = KokomoRelease|Any CPU
-		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.VLSRelease|Any CPU.ActiveCfg = VLSRelease|Any CPU
-		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.VLSRelease|Any CPU.Build.0 = VLSRelease|Any CPU
+		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC54E1F-55EB-4586-BA71-4FF16959FF52}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.Debug|Any CPU.ActiveCfg = Debug
-		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.KokomoRelease|Any CPU.ActiveCfg = KokomoRelease
-		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.KokomoRelease|Any CPU.Build.0 = KokomoRelease
-		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.VLSRelease|Any CPU.ActiveCfg = VLSRelease
-		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.VLSRelease|Any CPU.Build.0 = VLSRelease
+		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.Release|Any CPU.ActiveCfg = Release
+		{BC97AE0B-0368-4FC9-A86D-86E8C9AF0169}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
