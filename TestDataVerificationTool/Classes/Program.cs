@@ -24,14 +24,6 @@ namespace TestDataVerificationTool
                 Application.Exit();
             }
 
-            //Sanity check to confirm that Config variables are correct for the build
-            Trace.WriteLine("Location is " + ConfigurationManager.AppSettings["Location"]);
-            Trace.WriteLine("Settings path is " + ConfigurationManager.AppSettings["ConfigPath"]);
-
-            Trace.WriteLine("Sypro Connection String: " + ConfigurationManager.ConnectionStrings[ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]]);
-            Trace.WriteLine("Test Connection String: " + ConfigurationManager.ConnectionStrings[ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDB"]]);
-            Trace.WriteLine("Verification Connection String: " + ConfigurationManager.ConnectionStrings[ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["VerificationDB"]]);
-
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

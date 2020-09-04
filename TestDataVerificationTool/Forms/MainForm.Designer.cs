@@ -38,9 +38,11 @@
             this.locationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bothellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kokomoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kokomoArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.finalTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AfterBurnIn_Menu = new System.Windows.Forms.ToolStripMenuItem();
             this.BeforeBurnIn_Menu = new System.Windows.Forms.ToolStripMenuItem();
+            this.automationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblOperator = new System.Windows.Forms.Label();
             this.txtUnitSN = new System.Windows.Forms.TextBox();
@@ -53,7 +55,6 @@
             this.btnFail = new System.Windows.Forms.Button();
             this.operatorID = new System.Windows.Forms.TextBox();
             this.RecordCount = new System.Windows.Forms.Button();
-            this.automationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
@@ -81,13 +82,12 @@
             // showToolStripMenuItem
             // 
             this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-            this.showToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(158, 34);
             this.showToolStripMenuItem.Text = "Show";
             this.showToolStripMenuItem.Click += new System.EventHandler(this.ShowToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -95,7 +95,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1479, 36);
+            this.menuStrip1.Size = new System.Drawing.Size(1479, 33);
             this.menuStrip1.TabIndex = 70;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -121,9 +121,10 @@
             // 
             this.locationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bothellToolStripMenuItem,
-            this.kokomoToolStripMenuItem});
+            this.kokomoToolStripMenuItem,
+            this.kokomoArchiveToolStripMenuItem});
             this.locationToolStripMenuItem.Name = "locationToolStripMenuItem";
-            this.locationToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.locationToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
             this.locationToolStripMenuItem.Text = "Location";
             // 
             // bothellToolStripMenuItem
@@ -131,16 +132,23 @@
             this.bothellToolStripMenuItem.Checked = true;
             this.bothellToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bothellToolStripMenuItem.Name = "bothellToolStripMenuItem";
-            this.bothellToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
+            this.bothellToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
             this.bothellToolStripMenuItem.Text = "Bothell";
             this.bothellToolStripMenuItem.Click += new System.EventHandler(this.LocationMenuItem_Click);
             // 
             // kokomoToolStripMenuItem
             // 
             this.kokomoToolStripMenuItem.Name = "kokomoToolStripMenuItem";
-            this.kokomoToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
+            this.kokomoToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
             this.kokomoToolStripMenuItem.Text = "Kokomo";
             this.kokomoToolStripMenuItem.Click += new System.EventHandler(this.LocationMenuItem_Click);
+            // 
+            // kokomoArchiveToolStripMenuItem
+            // 
+            this.kokomoArchiveToolStripMenuItem.Name = "kokomoArchiveToolStripMenuItem";
+            this.kokomoArchiveToolStripMenuItem.Size = new System.Drawing.Size(240, 34);
+            this.kokomoArchiveToolStripMenuItem.Text = "KokomoArchive";
+            this.kokomoArchiveToolStripMenuItem.Click += new System.EventHandler(this.LocationMenuItem_Click);
             // 
             // finalTestToolStripMenuItem
             // 
@@ -148,7 +156,7 @@
             this.AfterBurnIn_Menu,
             this.BeforeBurnIn_Menu});
             this.finalTestToolStripMenuItem.Name = "finalTestToolStripMenuItem";
-            this.finalTestToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.finalTestToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
             this.finalTestToolStripMenuItem.Text = "Final Test";
             // 
             // AfterBurnIn_Menu
@@ -158,14 +166,21 @@
             this.AfterBurnIn_Menu.Name = "AfterBurnIn_Menu";
             this.AfterBurnIn_Menu.Size = new System.Drawing.Size(226, 34);
             this.AfterBurnIn_Menu.Text = "After Burn In";
-            this.AfterBurnIn_Menu.Click += new System.EventHandler(this.FinalTest_Menu_Click);
+            this.AfterBurnIn_Menu.Click += new System.EventHandler(this.FinalTestMenuItem_Click);
             // 
             // BeforeBurnIn_Menu
             // 
             this.BeforeBurnIn_Menu.Name = "BeforeBurnIn_Menu";
             this.BeforeBurnIn_Menu.Size = new System.Drawing.Size(226, 34);
             this.BeforeBurnIn_Menu.Text = "Before Burn In";
-            this.BeforeBurnIn_Menu.Click += new System.EventHandler(this.FinalTest_Menu_Click);
+            this.BeforeBurnIn_Menu.Click += new System.EventHandler(this.FinalTestMenuItem_Click);
+            // 
+            // automationToolStripMenuItem
+            // 
+            this.automationToolStripMenuItem.Name = "automationToolStripMenuItem";
+            this.automationToolStripMenuItem.Size = new System.Drawing.Size(209, 34);
+            this.automationToolStripMenuItem.Text = "Automation";
+            this.automationToolStripMenuItem.Click += new System.EventHandler(this.automationToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -293,6 +308,7 @@
             this.operatorID.Location = new System.Drawing.Point(132, 269);
             this.operatorID.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.operatorID.Name = "operatorID";
+            this.operatorID.ReadOnly = true;
             this.operatorID.Size = new System.Drawing.Size(180, 26);
             this.operatorID.TabIndex = 85;
             // 
@@ -307,13 +323,6 @@
             this.RecordCount.TabIndex = 86;
             this.RecordCount.Text = "0";
             this.RecordCount.UseVisualStyleBackColor = false;
-            // 
-            // automationToolStripMenuItem
-            // 
-            this.automationToolStripMenuItem.Name = "automationToolStripMenuItem";
-            this.automationToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
-            this.automationToolStripMenuItem.Text = "Automation";
-            this.automationToolStripMenuItem.Click += new System.EventHandler(this.automationToolStripMenuItem_Click);
             // 
             // button1
             // 
@@ -396,6 +405,7 @@
         private System.Windows.Forms.ToolStripMenuItem automationToolStripMenuItem;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem kokomoArchiveToolStripMenuItem;
     }
 }
 

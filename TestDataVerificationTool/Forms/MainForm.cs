@@ -17,8 +17,12 @@ namespace TestDataVerificationTool
                                   Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
 
         private readonly string TITLE = "MFG-00543 Test Data Verification Tool";
-        private bool AUTOMATE_VERIFICATION = bool.Parse(ConfigurationManager.AppSettings["Auto"]);
+        private bool AUTOMATE_VERIFICATION;
         private VerfApp BackendApp;
+
+        const string BothellLocationTag = "Bothell";
+        const string KokomoLocationTag = "Kokomo";
+        const string KokomoArchiveLocationTag = "KokomoArchive";
 
         public MainForm()
         {
@@ -33,32 +37,33 @@ namespace TestDataVerificationTool
          *
          *
          ***************************************************/
-        private void FrmApp_Load(object sender, EventArgs e)
+        private async void FrmApp_Load(object sender, EventArgs e)
         {
+            //Backend app for all backend logic
+            this.BackendApp = new VerfApp();
             btnConfirm.Enabled = false;
             btnFail.Enabled = false;
             btnConfirm.BackColor = System.Drawing.Color.Gray;
             btnFail.BackColor = System.Drawing.Color.Gray;
             operatorID.Text = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             lblDescription.Text = "";
+
+            //The location settings should persist. Use the last known config location.
+            LocationMenuItem_Click(ConfigurationManager.AppSettings["Location"], null);
             this.Text = string.Format("{0} v{1} {2}", this.TITLE, this.VERSION, ConfigurationManager.AppSettings["Location"]);
-            if(ConfigurationManager.AppSettings["Location"] == "Bothell")
-            {
-                this.bothellToolStripMenuItem.Checked = true;
-                this.kokomoToolStripMenuItem.Checked = false;
-            }
-            else if (ConfigurationManager.AppSettings["Location"] == "Kokomo")
-            {
-                this.kokomoToolStripMenuItem.Checked = true;
-                this.bothellToolStripMenuItem.Checked = false;
 
-            }
+            //Set the default final test settings to After Burn In (just in case).
+            FinalTestMenuItem_Click(AfterBurnIn_Menu.Text, null);
 
-            //Create new instance of backend process and message passing capability
-            Progress<(string, ACTION_TYPE)> message = new Progress<(string, ACTION_TYPE)>(s => this.DisplayMessage(s));
+            this.AUTOMATE_VERIFICATION = bool.Parse(ConfigurationManager.AppSettings["Auto"]);
+
+            this.automationToolStripMenuItem.Checked = this.AUTOMATE_VERIFICATION;
+            
+
+           
             try
-            {
-                this.BackendApp = new VerfApp(message);
+            {     
+                await this.BackendApp.Reconnect();
             }
             catch(Exception ex)
             {
@@ -141,6 +146,7 @@ namespace TestDataVerificationTool
                     btnConfirm.Enabled = true;
                     btnConfirm.BackColor = System.Drawing.Color.Green;
                     btnFail.BackColor = System.Drawing.Color.Red;
+                    Application.DoEvents();
 
                     if (AUTOMATE_VERIFICATION)
                     {
@@ -150,16 +156,21 @@ namespace TestDataVerificationTool
                 }
                 else
                 {
-                    //No data found.
+
+                    this.button1.BackColor = Color.Gray;
+                    this.button1.Text = "No Data";
+                    Application.DoEvents();
                     if (BackendApp.RequiresTestData(this.lblDescription.Text))
                     {
-                        this.ButtonFail_Click(null, null);
+                        if (AUTOMATE_VERIFICATION)
+                        {
+                            this.ButtonFail_Click(null, null);
+                        }
+                        
                     }
-                    else
-                    {
-                        this.button1.BackColor = Color.Gray;
-                        this.button1.Text = "No Data";
-                    }
+                    
+                    //No data found.
+                    
                 }
                 
             }
@@ -201,7 +212,7 @@ namespace TestDataVerificationTool
                 }
                 
                 lblDescription.Text = string.Format("{0} - {1}", partnumber, description);
-                if ((data != null) && (data.Rows.Count > 0)) return true;
+                if ((data != null)) return true;
                 
 
             }
@@ -239,7 +250,7 @@ namespace TestDataVerificationTool
             }
             else 
             {
-                if (DataGrid.Rows.Count > 0)
+                if (DataGrid.Rows[0].Cells["OverallPassFail"].Value != null)
                 {
                     if (DataGrid.Rows[0].Cells["OverallPassFail"].Value.ToString() == "PASS")
                     {
@@ -256,7 +267,7 @@ namespace TestDataVerificationTool
                 }
                 else
                 {
-                    //this.ButtonFail_Click(null, null);
+                    this.ButtonFail_Click(null, null);
                 }
                 
             }
@@ -268,6 +279,7 @@ namespace TestDataVerificationTool
             string ColumnName = "TestResult";
             //Verify that the values are what they should be.
             int cnt = 0;
+
             foreach (DataGridViewRow row in DataGrid.Rows)
             {
                 if (row.Cells[DataGrid.Columns[ColumnName].Index].Value != null)
@@ -340,50 +352,64 @@ namespace TestDataVerificationTool
 
 
 
-        private void FinalTest_Menu_Click(object sender, EventArgs e)
+        private void FinalTestMenuItem_Click(object sender, EventArgs e)
         {
             System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             //Before ONLY checked
-            if (BeforeBurnIn_Menu.Checked && !AfterBurnIn_Menu.Checked)
-            {
-                this.BeforeBurnIn_Menu.Checked = false;
-                this.AfterBurnIn_Menu.Checked = true;
-                config.AppSettings.Settings["FT_Keyword"].Value = "After%";   
-            }
-            //After ONLY Checked
-            else if (!BeforeBurnIn_Menu.Checked && AfterBurnIn_Menu.Checked)
+            if (sender.ToString() == BeforeBurnIn_Menu.Text)
             {
                 this.BeforeBurnIn_Menu.Checked = true;
                 this.AfterBurnIn_Menu.Checked = false;
-                config.AppSettings.Settings["FT_Keyword"].Value = "Before%";
+                config.AppSettings.Settings["FT_Keyword"].Value = "Before%";   
+            }
+            //After ONLY Checked
+            else if (sender.ToString() == AfterBurnIn_Menu.Text)
+            {
+                this.BeforeBurnIn_Menu.Checked = false;
+                this.AfterBurnIn_Menu.Checked = true;
+                config.AppSettings.Settings["FT_Keyword"].Value = "After%";
             }
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
         }
 
-        private void LocationMenuItem_Click(object sender, EventArgs e)
+        private async void LocationMenuItem_Click(object sender, EventArgs e)
         {
 
             System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            if (bothellToolStripMenuItem.Checked)
-            {
+            if (sender.ToString() == BothellLocationTag)
+            {   
+                //Bothell
+                this.bothellToolStripMenuItem.Checked = true;
+                this.kokomoToolStripMenuItem.Checked = false;
+                this.kokomoArchiveToolStripMenuItem.Checked = false;
+
+                config.AppSettings.Settings["Location"].Value = BothellLocationTag;
+            }
+            else if (sender.ToString() == "Kokomo")
+            {   
+                //Kokomo
                 this.bothellToolStripMenuItem.Checked = false;
                 this.kokomoToolStripMenuItem.Checked = true;
+                this.kokomoArchiveToolStripMenuItem.Checked = false;
 
-                config.AppSettings.Settings["Location"].Value = "Kokomo";
+                config.AppSettings.Settings["Location"].Value = KokomoLocationTag;
             }
-            else if (kokomoToolStripMenuItem.Checked)
+            else if (sender.ToString() == KokomoArchiveLocationTag)
             {
+                //Kokomo Archive
+                this.bothellToolStripMenuItem.Checked = false;
                 this.kokomoToolStripMenuItem.Checked = false;
-                this.bothellToolStripMenuItem.Checked = true;
-                config.AppSettings.Settings["Location"].Value = "Bothell";
+                this.kokomoArchiveToolStripMenuItem.Checked = true;
+
+                config.AppSettings.Settings["Location"].Value = KokomoArchiveLocationTag;
             }
 
-            
+
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
-            this.BackendApp.Reconnect();
+            await this.BackendApp.Reconnect();
             this.Text = string.Format("{0} v{1} {2}", this.TITLE, this.VERSION, ConfigurationManager.AppSettings["Location"]);
         }
 
@@ -401,9 +427,9 @@ namespace TestDataVerificationTool
                 this.automationToolStripMenuItem.Checked = false;
                 this.AUTOMATE_VERIFICATION = false;
                 config.AppSettings.Settings["Auto"].Value = "false";
-                config.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
             }
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
         }
     }
 }

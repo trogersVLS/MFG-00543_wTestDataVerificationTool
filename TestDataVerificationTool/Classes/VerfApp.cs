@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using Newtonsoft.Json;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace TestDataVerificationTool
 {
@@ -53,33 +54,36 @@ namespace TestDataVerificationTool
         private List<TestTable> TestTables;
 
         public Part CurrentPart;
-        public VerfApp(IProgress<(string message, ACTION_TYPE messageType)> messagePipe)
+        public VerfApp()
         {
 
             //Initialize TableName Dictionary.
             TestTables = LoadJSON(ConfigurationManager.AppSettings["ConfigPath"]);
             //Initialize database connections
-            this.SysproConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
-            this.TestDataConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDataDB"]);
-            if(this.SysproConn == null || this.TestDataConn == null)
-            {
-                throw new Exception("Could not connect to the database");
-            }
+            
         }
 
-        public void Reconnect()
+        public async Task<bool> Reconnect()
         {
-            this.SysproConn.Dispose();
-            this.TestDataConn.Dispose();
+            
             this.SysproConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["SysproDB"]);
             this.TestDataConn = DBManager.ConnectToDatabase(ConfigurationManager.AppSettings["Location"] + ConfigurationManager.AppSettings["TestDataDB"]);
+
+            if (this.SysproConn == null || this.TestDataConn == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public bool RequiresTestData(string description)
         {
             foreach (TestTable entry in this.TestTables)
             {
-                if (description.Contains(entry.Keyword))
+                if (description.Contains(entry.Keyword) && !description.Contains("MBM"))
                 {
 
                     return true;
@@ -126,8 +130,9 @@ namespace TestDataVerificationTool
             if (GetPartNumber(serial, out partnumber, out description))
             {
                 foreach (TestTable entry in this.TestTables)
-                {
-                    if (description.Contains(entry.Keyword))
+                {   
+                    //Ignore MBM's because we do not test them.
+                    if (!partnumber.Contains("MBM") && description.Contains(entry.Keyword))
                     {
                         tablename = entry.TableName;
                         datetimecol = entry.DateTimeCol;
