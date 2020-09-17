@@ -42,7 +42,7 @@
       "FinalDevices": [
         {
           "partnumber": "PRT-00490",
-          "numtests": 56
+          "numtests": 55
         },
         {
           "partnumber": "PRT-00900",
@@ -54,7 +54,7 @@
         },
         {
           "partnumber": "PRT-01100",
-          "numtests": 48
+          "numtests": 47
         },
         {
           "partnumber": "PRT-01184",
@@ -69,7 +69,7 @@
           "numtests": 29
         }
       ]
-      
+
     },
     {
       "TableName": "Production_Test_InletAccumulator",
@@ -95,6 +95,11 @@
       "TableName": "Production_Test_O2_Sensor",
       "Keyword": "OAX",
       "DateTimeCol": "StartDateTime"
+    },
+    {
+      "TableName": "Production_Test_O2Regulator",
+      "Keyword": "Oxygen Regulator",
+      "DateTimeCol": "StartTime"
     },
     {
       "TableName": "Production_Test_OxygenAccumulator",

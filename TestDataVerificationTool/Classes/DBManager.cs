@@ -73,6 +73,7 @@ namespace TestDataVerificationTool
                                 AND NOT([TestName] LIKE 'Oxygen 3%Oxygen Concentration')
                                 AND NOT([TestName] LIKE 'Oxygen 3%Time From Timer')
                                 AND NOT([TestName] LIKE 'Oxygen 1%Alarm%')
+                                AND NOT([TestName] LIKE 'Oxygen 3%Alarm%')
 
                                 GROUP BY[Serial], [TestName], [MfgStatus]) AS latest_tests
                             INNER JOIN
