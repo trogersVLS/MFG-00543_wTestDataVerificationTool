@@ -153,9 +153,14 @@ namespace TestDataVerificationTool
             DataTable Records = new DataTable();
             try
             {
+
+
+                //Testing shit
+                //query.CommandText = "waitfor delay '00:00:05'"; //This line added to force the exception
                 using (SqlDataAdapter sqlDataAdap = new SqlDataAdapter(query))
                 {
-                    sqlDataAdap.Fill(Records);
+                    //sqlDataAdap.SelectCommand.CommandTimeout = 1; //This line added to force exception
+                    sqlDataAdap.Fill(Records); //This line threw the exception
                 }
             }
             catch (Exception e)
