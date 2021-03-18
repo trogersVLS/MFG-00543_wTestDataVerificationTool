@@ -178,8 +178,7 @@
     <Copy Condition="Exists('$(DeployedConfig)')" SourceFiles="$(IntermediateOutputPath)$(TargetFileName).config" DestinationFiles="$(DeployedConfig)" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>cd $(TargerDir)
-del settings.json
-cp ..\..\settings.json .</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
